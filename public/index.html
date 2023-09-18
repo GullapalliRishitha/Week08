@@ -7,6 +7,7 @@
     <title>Personal Budget</title>
     <link rel="stylesheet" href="reset.css">
     <link rel="stylesheet" href="main.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
 
@@ -96,7 +97,7 @@
                 <canvas id="myChart" width="400" height="400"></canvas>
             
             </div>
-
+            <div id="chart"></div> 
         </div>
 
     </div>
@@ -114,46 +115,93 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        var data = {
-                    data: [30, 350, 90],
+       const fetchData = async () => {
+            var data;
+            var s = await axios.get('/budget');
+            return s.data.myBudget;
+        };
+
+        const Chart_create = async () => {
+            
+            var data = await fetchData();
+            console.log(data);
+            var width = 325;
+            var height = 325;
+            var radius = Math.min(width, height) / 2;
+
+           
+            var svg = d3.select("#chart")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        
+            var color = d3.scaleOrdinal()
+                .range(["#ffcd56", "#0000ff", "#daa520", "#fd6b19", "#808080", "#a0522d", "#808080", "#000080", "#00ced1"]);
+
+            var pie = d3.pie()
+                .value(function(d) { return d.budget; });
+
+            var arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(radius);
+
+            var arcs = svg.selectAll("arc")
+                .data(pie(data))
+                .enter()
+                .append("g");
+
+            arcs.append("path")
+                .attr("d", arc)
+                .attr("fill", function(d) { return color(d.data.title); });
+
+            arcs.append("text")
+                .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+                .attr("text-anchor", "middle")
+                .text(function(d) { return d.data.title; });
+        }
+       Chart_create();
+
+        let data_p= {
+                    data: [],
                     backgroundColor: [
-                        '#ffcd56',
-                        '#ff6384',
-                        '#36a2eb',
-                        '#fd6b19'
+                        '#808080',
+                        '#dc143c',
+                        '#ff0000',
+                        '#fd6b19',
+                        "#00fa9a", 
+                        "#800080", 
+                        "#006400", 
+                        "#a52a2a"
                     ],
-                    labels: [
-                    'Eat out',
-                    'Rent',
-                    'Groceries'
-                    ]
+                    labels: []
         };
         function createChart() {
-          new Chart(myChart, {
+          var test = new Chart(myChart, {
             type: "doughnut",
             data: {
-                labels: data.labels,
+                labels: data_p.labels,
                 datasets: [
                 {
                     label: "Language Popularity",
-                    data: data.data,
+                    data: data_p.data,
                 },
                 ],
             }
             })
         }
-        //createChart();
 
        
        function getBudget() {
             axios.get('/budget')
             .then((res) => {
-                console.log(res.data);
+                console.log(res.data.myBudget.length);
                 for(var i = 0; i < res.data.myBudget.length; i++ ){
-                    data.data[i] = res.data.myBudget[i].budget;
-                    data.labels[i] = res.data.myBudget[i].title;
+                    data_p.data.push(res.data.myBudget[i].budget);
+                    data_p.labels.push(res.data.myBudget[i].title);
                 }
-                console.log(data.data[0]);
                 console.log(res.data.myBudget[0].budget);
                 createChart();
             })

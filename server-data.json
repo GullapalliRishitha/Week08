@@ -2,11 +2,11 @@
     {"myBudget": [
         {
             "title": "Healthcare",
-            "budget": 30
+            "budget": 100
         },
         {
             "title": "Pets",
-            "budget": 350
+            "budget": 250
         },
         {
             "title": "Cars",
