@@ -1,28 +1,14 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
 const port = 2000;
 
 app.use('/', express.static('public'))
 
-const budget = {
-myBudget: [
-    {
-        title: 'Eat Out!!',
-        budget: 30
-    },
-    {
-        title: "Rent",
-        budget: 350
-    },
-    {
-        title: "Groceries",
-        budget: 90
-    }
-]   
-};
+const server_data = fs.readFileSync('server-data.json', 'utf8'); 
 
 app.get('/budget', (req, res) => {
-    res.json(budget);
+    res.send(server_data);
 })
 
 app.listen(port, () =>{

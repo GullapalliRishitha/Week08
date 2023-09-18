@@ -1,0 +1,34 @@
+
+    {"myBudget": [
+        {
+            "title": "Healthcare",
+            "budget": 30
+        },
+        {
+            "title": "Pets",
+            "budget": 350
+        },
+        {
+            "title": "Cars",
+            "budget": 90
+        },
+        {
+            "title": "Utilities",
+            "budget": 80
+        },
+        {
+            "title": "Transportation",
+            "budget": 200
+        },
+        {
+            "title": "Food",
+            "budget": 90
+        },
+        {
+            "title": "Insurance",
+            "budget": 120
+        }
+    ]}
+    
+   
+    
